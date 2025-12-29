@@ -1,0 +1,7 @@
+[project]
+name = "toonpy"
+version = "0.1.0"
+description = "A Python library for working with TOON format, a compact and human readable serialization format optimized for LLM contexts."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
