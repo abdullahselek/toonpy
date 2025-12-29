@@ -5,3 +5,12 @@ description = "A Python library for working with TOON format, a compact and huma
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = []
+
+[dependency-groups]
+dev = [
+    "nox>=2025.11.12",
+    "pytest>=9.0.2",
+    "pytest-cov>=7.0.0",
+    "ruff>=0.14.10",
+    "ty>=0.0.7",
+]
