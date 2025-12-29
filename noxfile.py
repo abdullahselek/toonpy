@@ -67,4 +67,4 @@ def lint(session: nox.Session):
 @nox.session(python=False)
 def check_types(session: nox.Session):
     """Run static type checking."""
-    session.run("uvx ty check", *CODE_TO_TEST)
+    session.run("ty", "check", *CODE_TO_TEST)
