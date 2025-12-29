@@ -34,8 +34,6 @@ def run_tests(session: nox.Session):
         "--cov-branch",
         "--cov-report=term",
         "--cov-report=xml",
-        "--numprocesses=auto",
-        "--maxprocesses=4",
         *pytest_args,
     )
 
