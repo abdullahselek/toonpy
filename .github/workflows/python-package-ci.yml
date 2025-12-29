@@ -39,4 +39,4 @@ jobs:
         uv run nox -s check_types
     - name: Run tests
       run: |
-        uv run nox -s run_tests-${{ matrix.python-version }}
+        uv run nox -s run_tests

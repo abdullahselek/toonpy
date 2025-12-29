@@ -10,11 +10,10 @@ nox.options.sessions = [
     "run_tests",
 ]
 
-PYTHON = ["3.10"]
 CODE_TO_TEST = ["src", "tests", "noxfile.py"]
 
 
-@nox.session(python=PYTHON)
+@nox.session()
 def run_tests(session: nox.Session):
     """Run unit tests."""
     session.run_install(
