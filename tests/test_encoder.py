@@ -1,4 +1,7 @@
+"""Test for encoder module."""
+
 import pytest
+
 from toonpy.encoder import ToonEncoder, dumps
 
 
@@ -6,6 +9,7 @@ from toonpy.encoder import ToonEncoder, dumps
 def encoder():
     """Fixture for ToonEncoder."""
     return ToonEncoder()
+
 
 @pytest.mark.parametrize(
     "input_val, expected",
@@ -48,12 +52,7 @@ def test_empty_structures(encoder):
 
 def test_basic_dict(encoder):
     """Test basic dictionary."""
-    data = {
-        "id": 123456,
-        "name": "Joe",
-        "tags": ["tester", "user"],
-        "active": False
-    }
+    data = {"id": 123456, "name": "Joe", "tags": ["tester", "user"], "active": False}
     expected = "id: 123456\nname: Joe\ntags[2]: tester,user\nactive: false"
     assert encoder.encode(data) == expected
 
@@ -74,10 +73,7 @@ def test_tabular_list_inside_dict(encoder):
 
 def test_tabular_list_multi_uniform_dict(encoder):
     """Test tabular list that contains multiple uniform dicts."""
-    data = [
-        {"sku": "A1", "qty": 2, "price": 9.99},
-        {"sku": "B2", "qty": 1, "price": 14.5}
-    ]
+    data = [{"sku": "A1", "qty": 2, "price": 9.99}, {"sku": "B2", "qty": 1, "price": 14.5}]
     expected = "[2]{sku,qty,price}:\n  A1,2,9.99\n  B2,1,14.5"
     assert encoder.encode(data) == expected
 

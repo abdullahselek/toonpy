@@ -62,7 +62,9 @@ class ToonEncoder:
 
         return "\n".join(lines)
 
-    def _encode_standard_list(self, data: list[Any], indent_level: int, indent: str = " ") -> str:
+    def _encode_standard_list(
+        self, data: list[Any], indent_level: int, indent: str = " "
+    ) -> str:
         """Encode a mixed or non uniform list."""
         header = f"[{len(data)}]:"
         lines = []
