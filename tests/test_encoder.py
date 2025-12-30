@@ -1,4 +1,4 @@
-"""Test for encoder module."""
+"""Tests for encoder module."""
 
 import pytest
 
