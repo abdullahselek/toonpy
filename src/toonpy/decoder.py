@@ -30,11 +30,6 @@ def _convert_identity(v: str) -> str:
     return v
 
 
-# def _convert_null(v: str) -> None:
-#     """Return None regardless of input."""
-#     return None
-
-
 def _convert_null(v: str) -> None:
     """Return None if input is 'null', otherwise raise ValueError to trigger fallback."""
     if v == "null":
@@ -337,7 +332,6 @@ class ToonDecoder:
                     is_inline_dict = False
                     if ":" in val_part and not val_part.startswith('"'):
                         k_candidate, _, v_candidate = val_part.partition(":")
-
                         # Ensure it's a key-value pair
                         if not v_candidate or v_candidate.startswith(" "):
                             k = k_candidate.strip()

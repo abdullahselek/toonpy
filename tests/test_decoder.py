@@ -224,15 +224,13 @@ def test_tabular_primitive_conversion():
     toon_str = "[2]{is_valid,result,nothing}\ntrue, 42, null\nfalse, 0, undefined"
     decoded = loads(toon_str)
 
-    # Row 1
     assert decoded[0]["is_valid"] is True
     assert decoded[0]["result"] == 42
     assert decoded[0]["nothing"] is None
 
-    # Row 2
     assert decoded[1]["is_valid"] is False
     assert decoded[1]["result"] == 0
-    assert decoded[1]["nothing"] == "undefined"  # Should remain string
+    assert decoded[1]["nothing"] == "undefined"
 
 
 def test_keys_mimicking_syntax():
@@ -249,7 +247,6 @@ def test_whitespace_preservation_in_values():
     toon_str = "sentence: This is a sentence.\npadded:    internal   spaces   "
     decoded = loads(toon_str)
     assert decoded["sentence"] == "This is a sentence."
-    # Expectation: leading/trailing colon-space stripped, internal kept
     assert decoded["padded"].strip() == "internal   spaces"
 
 
@@ -257,8 +254,6 @@ def test_inline_list_trailing_comma():
     """Test resilience against trailing commas in inline CSV lists."""
     toon_str = "[3]: 10, 20, 30,"
     decoded = loads(toon_str)
-    # Check if it ignores the empty last element or parses it as None/Empty string
-    # Adjust assertion based on your specific implementation choice
     assert len(decoded) >= 3
     assert decoded[0] == 10
 
