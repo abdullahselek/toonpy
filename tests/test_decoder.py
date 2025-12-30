@@ -14,6 +14,7 @@ def test_primitives():
         "simple_str: hello"
     )
     decoded = loads(toon_str)
+
     assert decoded["int"] == 42
     assert decoded["float"] == 3.14
     assert decoded["bool_true"] is True
@@ -31,6 +32,7 @@ def test_string_unquoting():
         'numeric_string: "123"'
     )
     decoded = loads(toon_str)
+
     assert decoded["with_comma"] == "hello, world"
     assert decoded["with_colon"] == "key: value"
     assert decoded["empty"] == ""
@@ -42,6 +44,7 @@ def test_root_tabular_array():
     """Test parsing when the file is JUST a tabular array (no root dict)."""
     toon_str = "[2]{id,name}\n1,Alice\n2,Bob"
     expected = [{"id": 1, "name": "Alice"}, {"id": 2, "name": "Bob"}]
+
     assert loads(toon_str) == expected
 
 
@@ -49,6 +52,7 @@ def test_root_tabular_array_with_colon():
     """Test regression fix: Header parsing with trailing colon."""
     toon_str = "[2]{id,name}:\n1,Ada\n2,Bob"
     expected = [{"id": 1, "name": "Ada"}, {"id": 2, "name": "Bob"}]
+
     assert loads(toon_str) == expected
 
 
@@ -56,6 +60,7 @@ def test_nested_tabular_array():
     """Test the key[N]{header}: syntax inside a dictionary."""
     toon_str = "meta: data\nusers[2]{id,role}:\n  10,admin\n  20,user"
     decoded = loads(toon_str)
+
     assert decoded["meta"] == "data"
     assert len(decoded["users"]) == 2
     assert decoded["users"][0] == {"id": 10, "role": "admin"}
@@ -64,10 +69,12 @@ def test_nested_tabular_array():
 def test_inline_csv_list():
     """Test inline array logic: '[N]: 1,2,3'."""
     toon_str = "[5]: 1, 2, 3, 4, 5"
+
     assert loads(toon_str) == [1, 2, 3, 4, 5]
 
     toon_nested = "data:\n  vals: [3]: 10, 20, 30"
     decoded = loads(toon_nested)
+
     assert decoded["data"]["vals"] == [10, 20, 30]
 
 
@@ -75,6 +82,7 @@ def test_standard_list_with_inline_dict():
     """Test list items that are dictionaries vs strings."""
     toon_str = "[3]:\n  - 1\n  - a: 1\n  - text"
     expected = [1, {"a": 1}, "text"]
+
     assert loads(toon_str) == expected
 
 
@@ -82,6 +90,7 @@ def test_adaptive_schema_fallback():
     """Test that V7 adaptive schema handles mixed types correctly."""
     toon_str = "[2]{val}\n100\nnot_a_number"
     expected = [{"val": 100}, {"val": "not_a_number"}]
+
     assert loads(toon_str) == expected
 
 
@@ -138,7 +147,6 @@ def test_tabular_adaptive_fallback_and_short_rows():
     assert decoded[1]["col1"] == 4
     assert decoded[1]["col2"] == 5
     assert decoded[1].get("col3") is None
-
     assert decoded[2]["col2"] == "eight"
 
 
@@ -172,6 +180,7 @@ def test_indentation_termination():
     """Test for the 'break' conditions in loops when indentation decreases."""
     toon_str = "level1:\n  level2:\n    val: 1\n  back_to_2: 2\nback_to_1: 1"
     decoded = loads(toon_str)
+
     assert decoded["level1"]["level2"]["val"] == 1
     assert decoded["level1"]["back_to_2"] == 2
     assert decoded["back_to_1"] == 1
@@ -183,10 +192,10 @@ def test_malformed_lines_and_empty_blocks():
         "key_with_no_separator\nvalid: 1\n\n   \nempty_list: []\nempty_inline_list: [0]:"
     )
     decoded = loads(toon_str)
+
     assert decoded.get("key_with_no_separator") is None
     assert decoded["valid"] == 1
     assert decoded["empty_list"] == []
-
     assert decoded["empty_inline_list"] == []
 
 
@@ -194,6 +203,7 @@ def test_tabular_short_header_row_filling():
     """Test case for the loop in tabular init."""
     toon_str = "[1]{a,b,c}\n1"
     decoded = loads(toon_str)
+
     assert decoded[0]["a"] == 1
     assert decoded[0]["b"] is None
     assert decoded[0]["c"] is None
@@ -203,10 +213,12 @@ def test_stop_iteration_in_loops():
     """Test case for StopIteration inside _parse_block and _parse_list_items loops."""
     toon_str = "outer:\n  inner:"
     decoded = loads(toon_str)
+
     assert decoded["outer"]["inner"] == {}
 
     toon_str_list = "list[2]:\n  - 1"
     decoded_list = loads(toon_str_list)
+
     assert decoded_list["list"] == [1]
 
 
@@ -214,6 +226,7 @@ def test_scientific_notation():
     """Test parsing of scientific notation which often bypasses standard float/int regex."""
     toon_str = "small: 1.5e-10\nlarge: 2.5E+10\nint_scientific: 1e5"
     decoded = loads(toon_str)
+
     assert decoded["small"] == 1.5e-10
     assert decoded["large"] == 2.5e10
     assert decoded["int_scientific"] == 100000.0  # Usually parses as float
@@ -237,6 +250,7 @@ def test_keys_mimicking_syntax():
     """Test keys containing brackets/braces that shouldn't trigger array parsing."""
     toon_str = "key[with_brackets]: value\nkey{with_braces}: value\nnormal: 1"
     decoded = loads(toon_str)
+
     assert decoded["key[with_brackets]"] == "value"
     assert decoded["key{with_braces}"] == "value"
     assert decoded["normal"] == 1
@@ -246,6 +260,7 @@ def test_whitespace_preservation_in_values():
     """Test that internal whitespace in values is preserved, while surrounding is stripped."""
     toon_str = "sentence: This is a sentence.\npadded:    internal   spaces   "
     decoded = loads(toon_str)
+
     assert decoded["sentence"] == "This is a sentence."
     assert decoded["padded"].strip() == "internal   spaces"
 
@@ -254,6 +269,7 @@ def test_inline_list_trailing_comma():
     """Test resilience against trailing commas in inline CSV lists."""
     toon_str = "[3]: 10, 20, 30,"
     decoded = loads(toon_str)
+
     assert len(decoded) >= 3
     assert decoded[0] == 10
 
@@ -262,6 +278,7 @@ def test_root_list_of_lists():
     """Test a list where items are themselves inline lists (nested structure)."""
     toon_str = "matrix[2]:\n  - [2]: 1, 0\n  - [2]: 0, 1"
     decoded = loads(toon_str)
+
     assert decoded["matrix"][0] == [1, 0]
     assert decoded["matrix"][1] == [0, 1]
 
@@ -291,15 +308,7 @@ def test_tabular_edge_cases():
 
 def test_multiline_list_items():
     """Test list items defined as nested blocks."""
-    toon_str = (
-        "items[2]:\n"
-        "  - \n"
-        "    id: 1\n"
-        "    val: A\n"
-        "  - \n"
-        "    id: 2\n"
-        "    val: B"
-    )
+    toon_str = "items[2]:\n  - \n    id: 1\n    val: A\n  - \n    id: 2\n    val: B"
     decoded = loads(toon_str)
 
     assert len(decoded["items"]) == 2
