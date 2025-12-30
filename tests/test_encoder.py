@@ -54,6 +54,7 @@ def test_basic_dict(encoder):
     """Test basic dictionary."""
     data = {"id": 123456, "name": "Joe", "tags": ["tester", "user"], "active": False}
     expected = "id: 123456\nname: Joe\ntags[2]: tester,user\nactive: false"
+
     assert encoder.encode(data) == expected
 
 
@@ -61,6 +62,7 @@ def test_tabular_list_optimization_root(encoder):
     """Test a list of uniform objects at the root level."""
     data = [{"id": 1, "name": "Alice"}, {"id": 2, "name": "Bob"}]
     expected = "[2]{id,name}:\n  1,Alice\n  2,Bob"
+
     assert encoder.encode(data) == expected
 
 
@@ -68,6 +70,7 @@ def test_tabular_list_inside_dict(encoder):
     """Test tabular optimization when nested inside a dictionary."""
     data = {"users": [{"id": 1, "role": "admin"}, {"id": 2, "role": "user"}]}
     expected = "users[2]{id,role}:\n  1,admin\n  2,user"
+
     assert encoder.encode(data) == expected
 
 
@@ -75,6 +78,7 @@ def test_tabular_list_multi_uniform_dict(encoder):
     """Test tabular list that contains multiple uniform dicts."""
     data = [{"sku": "A1", "qty": 2, "price": 9.99}, {"sku": "B2", "qty": 1, "price": 14.5}]
     expected = "[2]{sku,qty,price}:\n  A1,2,9.99\n  B2,1,14.5"
+
     assert encoder.encode(data) == expected
 
 
@@ -82,6 +86,7 @@ def test_mixed_list_fallback(encoder):
     """Test a list that is not uniform."""
     data = [1, "two", True]
     expected = "[3]: 1,two,true"
+
     assert encoder.encode(data) == expected
 
 
@@ -89,6 +94,7 @@ def test_nested_dictionaries(encoder):
     """Test standard nested dictionary encoding."""
     data = {"server": {"config": {"port": 80}}}
     expected = "server:\n  config:\n    port: 80"
+
     assert encoder.encode(data) == expected
 
 
@@ -111,4 +117,5 @@ def test_complex_structure(encoder):
 def test_dumps_wrapper():
     """Ensure the module-level helper function works."""
     data = {"a": 1}
+
     assert dumps(data) == "a: 1"
