@@ -270,5 +270,48 @@ def test_comment_like_strings():
     """Test that hash symbols are treated as strings unless specific comment logic exists."""
     toon_str = "color: #FF0000\nhashtag: #nofilter"
     decoded = loads(toon_str)
+
     assert decoded["color"] == "#FF0000"
     assert decoded["hashtag"] == "#nofilter"
+
+
+def test_tabular_edge_cases():
+    """Test tabular parsing resilience."""
+    toon_str = "[2]{a,b,c}\n1, 2, 3\n10,,30"
+    decoded = loads(toon_str)
+
+    assert decoded[1]["a"] == 10
+    assert decoded[1]["b"] is None
+    assert decoded[1]["c"] == 30
+
+    empty_table = "[5]{a,b}"
+
+    assert loads(empty_table) == []
+
+
+def test_multiline_list_items():
+    """Test list items defined as nested blocks."""
+    toon_str = (
+        "items[2]:\n"
+        "  - \n"
+        "    id: 1\n"
+        "    val: A\n"
+        "  - \n"
+        "    id: 2\n"
+        "    val: B"
+    )
+    decoded = loads(toon_str)
+
+    assert len(decoded["items"]) == 2
+    assert decoded["items"][0] == {"id": 1, "val": "A"}
+    assert decoded["items"][1] == {"id": 2, "val": "B"}
+
+
+def test_tabular_ambiguous_first_row_types():
+    """Test that _detect_type_and_convert handles values that look like numbers."""
+    toon_str = "[2]{version,flag}\n1.2.3, -flag\n1.2.4, -verbose"
+    decoded = loads(toon_str)
+
+    assert decoded[0]["version"] == "1.2.3"
+    assert decoded[0]["flag"] == "-flag"
+    assert decoded[1]["version"] == "1.2.4"
