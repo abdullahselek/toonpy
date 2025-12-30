@@ -1,5 +1,8 @@
 # toon_serializer: Token Oriented Object Notation for Python
 
+[![toon_serializer CI](https://github.com/abdullahselek/toon_serializer/actions/workflows/python-package-ci.yml/badge.svg)](https://github.com/abdullahselek/toon_serializer/actions/workflows/python-package-ci.yml)
+[![toon_serializer pypi](https://img.shields.io/pypi/v/toon_serializer.svg)](https://pypi.org/project/toon_serializer/)
+
 toon_serializer is a high performance Python serializer/deserializer for TOON (Token Oriented Object Notation).
 
 TOON is a human readable data format designed to minimize token usage for LLMs by removing redundant syntax (braces, quotes, repeated keys) while maintaining structure. It excels at compressing list of dictionaries into Tabular Arrays, often reducing payload sizes by 30-50% compared to JSON.
