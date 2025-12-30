@@ -1,1 +1,1 @@
-"""toonpy Python library for working with TOON."""
+"""toon_serializer Python library for working with TOON."""

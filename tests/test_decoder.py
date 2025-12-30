@@ -1,6 +1,6 @@
 """Tests for decoder module."""
 
-from toonpy.decoder import loads
+from toon_serializer.decoder import loads
 
 
 def test_primitives():

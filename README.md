@@ -1,6 +1,6 @@
-# toonpy: Token Oriented Object Notation for Python
+# toon_serializer: Token Oriented Object Notation for Python
 
-ToonPy is a high performance Python serializer/deserializer for TOON (Token Oriented Object Notation).
+toon_serializer is a high performance Python serializer/deserializer for TOON (Token Oriented Object Notation).
 
 TOON is a human readable data format designed to minimize token usage for LLMs by removing redundant syntax (braces, quotes, repeated keys) while maintaining structure. It excels at compressing list of dictionaries into Tabular Arrays, often reducing payload sizes by 30-50% compared to JSON.
 
@@ -15,22 +15,22 @@ TOON is a human readable data format designed to minimize token usage for LLMs b
 ## Installation
 
 ```bash
-pip install toonpy
+pip install toon_serializer
 ```
 
 
 ## Usage
 
-ToonPyy mimics the standard Python json API with loads and dumps.
+toon_serializery mimics the standard Python json API with loads and dumps.
 
 1. Encoding Data (Serialization)
 
-ToonPy automatically detects Uniform Lists of Dictionaries and compresses them into a tabular format.
+toon_serializer automatically detects Uniform Lists of Dictionaries and compresses them into a tabular format.
 
 Input
 
 ```python
-import toonpy
+import toon_serializer
 
 data = {
     "model": "gpt-4",
@@ -45,7 +45,7 @@ data = {
     ]
 }
 
-toon_str = toonpy.dumps(data)
+toon_str = toon_serializer.dumps(data)
 print(toon_str)
 ```
 
@@ -67,7 +67,7 @@ messages[3]{role,content}:
 The decoder handles primitives, standard lists, and adaptive tabular arrays seamlessly.
 
 ```python
-import toonpy
+import toon_serializer
 
 toon_str = """
 version: 1.0
@@ -77,7 +77,7 @@ users[2]{id,name,is_active}:
 tags[3]: python, rust, go
 """
 
-data = toonpy.loads(toon_str)
+data = toon_serializer.loads(toon_str)
 
 print(data["users"][0]) 
 # {'id': 1, 'name': 'Alice', 'is_active': True}
@@ -90,7 +90,7 @@ print(data["tags"])
 
 - Encoder recursively checks for "uniformity" in lists. If a list contains mixed types, it gracefully falls back to a standard bulleted list.
 - Decoder uses a Pushback Iterator to parse line-by-line without loading the entire string into memory.
-- Adaptive Parsing when decoding tables, ToonPy inspects the first row to generate a specialized converter function (e.g., "Column 1 is int, Column 2 is string"), speeding up parsing for the remaining rows.
+- Adaptive Parsing when decoding tables, toon_serializer inspects the first row to generate a specialized converter function (e.g., "Column 1 is int, Column 2 is string"), speeding up parsing for the remaining rows.
 
 ## Contributing
 

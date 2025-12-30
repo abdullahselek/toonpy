@@ -1,4 +1,4 @@
-"""Encoder module of toonpy."""
+"""Encoder module of toon_serializer."""
 
 from typing import Any
 

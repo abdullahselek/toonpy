@@ -1,4 +1,4 @@
-"""Decoder module of toonpy."""
+"""Decoder module of toon_serializer."""
 
 import csv
 from collections.abc import Callable

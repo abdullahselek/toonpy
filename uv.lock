@@ -369,7 +369,7 @@ wheels = [
 ]
 
 [[package]]
-name = "toonpy"
+name = "toon_serializer"
 version = "1.0.0"
 source = { editable = "." }
 

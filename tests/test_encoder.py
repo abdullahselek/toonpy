@@ -2,7 +2,7 @@
 
 import pytest
 
-from toonpy.encoder import ToonEncoder, dumps
+from toon_serializer.encoder import ToonEncoder, dumps
 
 
 @pytest.fixture
