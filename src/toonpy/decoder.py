@@ -30,9 +30,16 @@ def _convert_identity(v: str) -> str:
     return v
 
 
+# def _convert_null(v: str) -> None:
+#     """Return None regardless of input."""
+#     return None
+
+
 def _convert_null(v: str) -> None:
-    """Return None regardless of input."""
-    return None
+    """Return None if input is 'null', otherwise raise ValueError to trigger fallback."""
+    if v == "null":
+        return None
+    raise ValueError(f"Expected null, got {v}")
 
 
 class ToonDecoder:
@@ -318,10 +325,20 @@ class ToonDecoder:
             if line.startswith("- "):
                 val_part = line[2:].strip()
                 if val_part:
+                    # Check for inline array syntax: "- [N]: val, val"
+                    if val_part.startswith("[") and "]:" in val_part:
+                        idx_close = val_part.find("]:")
+                        # Ensure content inside brackets is a number (size)
+                        if val_part[1:idx_close].isdigit():
+                            content = val_part[idx_close + 2 :].strip()
+                            append(self._parse_inline_csv_list(content))
+                            continue
+
                     is_inline_dict = False
                     if ":" in val_part and not val_part.startswith('"'):
                         k_candidate, _, v_candidate = val_part.partition(":")
-                        # Ensure it's a key-value pair (space after colon or empty value)
+
+                        # Ensure it's a key-value pair
                         if not v_candidate or v_candidate.startswith(" "):
                             k = k_candidate.strip()
                             v = v_candidate.strip()
@@ -381,10 +398,11 @@ class ToonDecoder:
                         continue
 
             if key.endswith("]") and "[" in key:
-                # Find the last '[' to handle keys that might validly contain brackets earlier
                 idx_brack = key.rfind("[")
                 if idx_brack != -1:
-                    key = key[:idx_brack].strip()
+                    # Only strip if it is a size indicator like [5], not a key name like [id]
+                    if key[idx_brack + 1 : -1].isdigit():
+                        key = key[:idx_brack].strip()
 
             if val:
                 if val.startswith("[") and val.endswith("]"):

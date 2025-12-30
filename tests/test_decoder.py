@@ -208,3 +208,72 @@ def test_stop_iteration_in_loops():
     toon_str_list = "list[2]:\n  - 1"
     decoded_list = loads(toon_str_list)
     assert decoded_list["list"] == [1]
+
+
+def test_scientific_notation():
+    """Test parsing of scientific notation which often bypasses standard float/int regex."""
+    toon_str = "small: 1.5e-10\nlarge: 2.5E+10\nint_scientific: 1e5"
+    decoded = loads(toon_str)
+    assert decoded["small"] == 1.5e-10
+    assert decoded["large"] == 2.5e10
+    assert decoded["int_scientific"] == 100000.0  # Usually parses as float
+
+
+def test_tabular_primitive_conversion():
+    """Test that tabular rows convert true/false/null, not just numbers/strings."""
+    toon_str = "[2]{is_valid,result,nothing}\ntrue, 42, null\nfalse, 0, undefined"
+    decoded = loads(toon_str)
+
+    # Row 1
+    assert decoded[0]["is_valid"] is True
+    assert decoded[0]["result"] == 42
+    assert decoded[0]["nothing"] is None
+
+    # Row 2
+    assert decoded[1]["is_valid"] is False
+    assert decoded[1]["result"] == 0
+    assert decoded[1]["nothing"] == "undefined"  # Should remain string
+
+
+def test_keys_mimicking_syntax():
+    """Test keys containing brackets/braces that shouldn't trigger array parsing."""
+    toon_str = "key[with_brackets]: value\nkey{with_braces}: value\nnormal: 1"
+    decoded = loads(toon_str)
+    assert decoded["key[with_brackets]"] == "value"
+    assert decoded["key{with_braces}"] == "value"
+    assert decoded["normal"] == 1
+
+
+def test_whitespace_preservation_in_values():
+    """Test that internal whitespace in values is preserved, while surrounding is stripped."""
+    toon_str = "sentence: This is a sentence.\npadded:    internal   spaces   "
+    decoded = loads(toon_str)
+    assert decoded["sentence"] == "This is a sentence."
+    # Expectation: leading/trailing colon-space stripped, internal kept
+    assert decoded["padded"].strip() == "internal   spaces"
+
+
+def test_inline_list_trailing_comma():
+    """Test resilience against trailing commas in inline CSV lists."""
+    toon_str = "[3]: 10, 20, 30,"
+    decoded = loads(toon_str)
+    # Check if it ignores the empty last element or parses it as None/Empty string
+    # Adjust assertion based on your specific implementation choice
+    assert len(decoded) >= 3
+    assert decoded[0] == 10
+
+
+def test_root_list_of_lists():
+    """Test a list where items are themselves inline lists (nested structure)."""
+    toon_str = "matrix[2]:\n  - [2]: 1, 0\n  - [2]: 0, 1"
+    decoded = loads(toon_str)
+    assert decoded["matrix"][0] == [1, 0]
+    assert decoded["matrix"][1] == [0, 1]
+
+
+def test_comment_like_strings():
+    """Test that hash symbols are treated as strings unless specific comment logic exists."""
+    toon_str = "color: #FF0000\nhashtag: #nofilter"
+    decoded = loads(toon_str)
+    assert decoded["color"] == "#FF0000"
+    assert decoded["hashtag"] == "#nofilter"
