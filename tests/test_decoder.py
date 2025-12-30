@@ -1,7 +1,6 @@
 """Tests for decoder module."""
 
-import pytest
-from toonpy.decoder import ToonDecoder, loads
+from toonpy.decoder import loads
 
 
 def test_primitives():
@@ -181,12 +180,7 @@ def test_indentation_termination():
 def test_malformed_lines_and_empty_blocks():
     """Test for partition failure, stop iteration, empty inputs."""
     toon_str = (
-        "key_with_no_separator\n"
-        "valid: 1\n"
-        "\n"
-        "   \n"
-        "empty_list: []\n"
-        "empty_inline_list: [0]:"
+        "key_with_no_separator\nvalid: 1\n\n   \nempty_list: []\nempty_inline_list: [0]:"
     )
     decoded = loads(toon_str)
     assert decoded.get("key_with_no_separator") is None

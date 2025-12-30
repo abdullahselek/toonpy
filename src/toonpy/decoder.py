@@ -380,13 +380,11 @@ class ToonDecoder:
                         res[real_key] = self._parse_tabular_adaptive(h_str, count)
                         continue
 
-            is_explicit_list = False
             if key.endswith("]") and "[" in key:
                 # Find the last '[' to handle keys that might validly contain brackets earlier
                 idx_brack = key.rfind("[")
                 if idx_brack != -1:
                     key = key[:idx_brack].strip()
-                    is_explicit_list = True
 
             if val:
                 if val.startswith("[") and val.endswith("]"):
